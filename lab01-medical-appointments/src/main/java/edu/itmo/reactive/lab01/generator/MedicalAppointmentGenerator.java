@@ -11,7 +11,6 @@ import main.java.edu.itmo.reactive.lab01.model.AppointmentStatus;
 import main.java.edu.itmo.reactive.lab01.model.Doctor;
 import main.java.edu.itmo.reactive.lab01.model.MedicalAppointment;
 import main.java.edu.itmo.reactive.lab01.model.Patient;
-import main.java.edu.itmo.reactive.lab01.generator.PatientGenerator;
 
 public class MedicalAppointmentGenerator {
     private final Random random = new Random();
@@ -47,7 +46,7 @@ public class MedicalAppointmentGenerator {
                     getRandomDuration(), 
                     random.nextBoolean());
         
-        List<String> symptoms = getRandomSymtoms();
+        List<String> symptoms = getRandomSymptoms();
         Patient patient = patientGenerator.createRandomPatients(id);
         Doctor doctor = doctorGenerator.createRandomDoctor(id);
 
@@ -65,7 +64,7 @@ public class MedicalAppointmentGenerator {
 
     }
 
-    private List<String> getRandomSymtoms() {
+    private List<String> getRandomSymptoms() {
         String[] symptoms = {
             "Headache",
             "Fever",

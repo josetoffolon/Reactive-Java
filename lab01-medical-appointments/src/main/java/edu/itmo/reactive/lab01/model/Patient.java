@@ -7,9 +7,14 @@ public class Patient {
     private int age;
 
     public Patient(long id2, String name2, int age2) {
+        this.id = id2;
+        this.name = name2;
+        this.age = age2;
     }
 
-    public Patient() {
-        //TODO Auto-generated constructor stub
+    @Override
+    public String toString() {
+        return "Patient [id=" + id + ", name=" + name + ", age=" + age +"]";
     }
+
 }

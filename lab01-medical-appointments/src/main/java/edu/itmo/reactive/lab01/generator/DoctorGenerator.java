@@ -13,7 +13,7 @@ public class DoctorGenerator {
     public Doctor createRandomDoctor(long id){
         
         String name = names[random.nextInt(names.length)];
-        String speciality = specialities[random.nextInt(names.length)];
+        String speciality = specialities[random.nextInt(specialities.length)];
 
         return new Doctor(id, name, speciality);
     }
