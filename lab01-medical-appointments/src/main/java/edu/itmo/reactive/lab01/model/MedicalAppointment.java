@@ -13,7 +13,7 @@ public class MedicalAppointment{
                 this.reason = reason2;
                 this.price = price2;
                 this.appointmentDate = date;
-                this.appointmenTime = time;
+                this.appointmentTime = time;
                 this.status = status2;
                 this.details = details2;
                 this.symptoms = symptoms2;
@@ -25,7 +25,7 @@ public class MedicalAppointment{
     private String reason;
     private double price;
     private LocalDate appointmentDate;
-    private LocalTime appointmenTime;
+    private LocalTime appointmentTime;
     private AppointmentStatus status;
     private AppointmentDetails details;
     private List<String> symptoms;
@@ -44,8 +44,8 @@ public class MedicalAppointment{
     public LocalDate getAppointmentDate() {
         return appointmentDate;
     }
-    public LocalTime getAppointmenTime() {
-        return appointmenTime;
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
     }
     public AppointmentStatus getStatus() {
         return status;

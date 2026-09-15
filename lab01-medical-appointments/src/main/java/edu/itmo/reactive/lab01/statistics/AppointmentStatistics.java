@@ -4,6 +4,6 @@ public record AppointmentStatistics(
     long count,
     long completed,
     long cancelled,
-    long schecuduled,
+    long scheduled,
     long noShow
 ) {}
