@@ -11,27 +11,41 @@ public class Main {
 
     public static void main(String[] args) {
 
+        int[] sizes = {5000, 50000, 250000};
+
         MedicalAppointmentGenerator generator = new MedicalAppointmentGenerator();
-        List<MedicalAppointment> appointments = generator.generateAppointments(5000);
 
-        AppointmentStatisticsCalculator calculator = new AppointmentStatisticsCalculator();
+        for (int size: sizes){
+            List<MedicalAppointment> appointments = generator.generateAppointments(size);
+            AppointmentStatisticsCalculator calculator = new AppointmentStatisticsCalculator();
 
-        long startTimeLoop = System.nanoTime();
-        AppointmentStatistics loopStatistics = calculator.calculateWithLoop(appointments);
-        long endTimeLoop = System.nanoTime();
-        long elapsedTimeLoop = endTimeLoop - startTimeLoop;
+            long startTimeLoop = System.nanoTime();
+            AppointmentStatistics loopStatistics = calculator.calculateWithLoop(appointments);
+            long endTimeLoop = System.nanoTime();
+            double elapsedTimeLoop = (endTimeLoop - startTimeLoop)/1000000;
 
-        long startTimeStream = System.nanoTime();
-        AppointmentStatistics streamStatistics = calculator.calculateWithStream(appointments);
-        long endTimeStream = System.nanoTime();
-        long elapsedTimeStream = endTimeStream - startTimeStream;
+            long startTimeStream = System.nanoTime();
+            AppointmentStatistics streamStatistics = calculator.calculateWithStream(appointments);
+            long endTimeStream = System.nanoTime();
+            double elapsedTimeStream = (endTimeStream - startTimeStream)/1000000;
 
-        long startTimeCustom = System.nanoTime();
-        AppointmentStatistics customStatistics = calculator.calculateWithCollector(appointments);
-        long endTimeCustom = System.nanoTime();
-        long elapsedTimeCustom = endTimeCustom - startTimeCustom;
+            long startTimeCustom = System.nanoTime();
+            AppointmentStatistics customStatistics = calculator.calculateWithCollector(appointments);
+            long endTimeCustom = System.nanoTime();
+            double elapsedTimeCustom = (endTimeCustom - startTimeCustom)/1000000;
 
-        System.out.println("Appointments Genereted: " + appointments.size());
+            System.out.println("Appointments Genereted: " + appointments.size());
+            System.out.println("loopStatistics: " + loopStatistics);
+            System.out.println("loopStatistics elapsedTime: " + elapsedTimeLoop);
+
+            System.out.println("streamStatistics: " + streamStatistics);
+            System.out.println("streamStatistics elapsedTimeStream: " + elapsedTimeStream);
+
+            System.out.println("customStatistics: " + customStatistics);
+            System.out.println("customStatistics elapsedTimeCustom: " + elapsedTimeCustom);
+        }
+        
+
 /* 
         for(MedicalAppointment appointment: appointments){
             System.out.println("--------------------------------------------------------------------------------------");
@@ -47,13 +61,5 @@ public class Main {
             System.out.println("Doctor: " + appointment.getDoctor());
         }*/
 
-        System.out.println("loopStatistics: " + loopStatistics);
-        System.out.println("loopStatistics elapsedTime: " + elapsedTimeLoop);
-
-        System.out.println("streamStatistics: " + streamStatistics);
-        System.out.println("streamStatistics elapsedTimeStream: " + elapsedTimeStream);
-
-        System.out.println("customStatistics: " + customStatistics);
-        System.out.println("customStatistics elapsedTimeCustom: " + elapsedTimeCustom);
     }
 }
