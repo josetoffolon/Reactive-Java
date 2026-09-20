@@ -22,25 +22,32 @@ public class Main {
             long startTimeLoop = System.nanoTime();
             AppointmentStatistics loopStatistics = calculator.calculateWithLoop(appointments);
             long endTimeLoop = System.nanoTime();
-            double elapsedTimeLoop = (endTimeLoop - startTimeLoop)/1000000;
+            double elapsedTimeLoop = (endTimeLoop - startTimeLoop)/1000000.0;
 
             long startTimeStream = System.nanoTime();
             AppointmentStatistics streamStatistics = calculator.calculateWithStream(appointments);
             long endTimeStream = System.nanoTime();
-            double elapsedTimeStream = (endTimeStream - startTimeStream)/1000000;
+            double elapsedTimeStream = (endTimeStream - startTimeStream)/1000000.0;
 
             long startTimeCustom = System.nanoTime();
             AppointmentStatistics customStatistics = calculator.calculateWithCollector(appointments);
             long endTimeCustom = System.nanoTime();
-            double elapsedTimeCustom = (endTimeCustom - startTimeCustom)/1000000;
+            double elapsedTimeCustom = (endTimeCustom - startTimeCustom)/1000000.0;
 
+            System.out.println("\n=====================================================");
             System.out.println("Appointments Genereted: " + appointments.size());
+            System.out.println("=====================================================");
+            System.out.println("Loop:");
             System.out.println("loopStatistics: " + loopStatistics);
             System.out.println("loopStatistics elapsedTime: " + elapsedTimeLoop);
+            System.out.println("\n");
 
+            System.out.println("Stream:");
             System.out.println("streamStatistics: " + streamStatistics);
             System.out.println("streamStatistics elapsedTimeStream: " + elapsedTimeStream);
+            System.out.println("\n");
 
+            System.out.println("Custom:");
             System.out.println("customStatistics: " + customStatistics);
             System.out.println("customStatistics elapsedTimeCustom: " + elapsedTimeCustom);
         }
