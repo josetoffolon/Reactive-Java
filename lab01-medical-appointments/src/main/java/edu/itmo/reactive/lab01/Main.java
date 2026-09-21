@@ -39,17 +39,17 @@ public class Main {
             System.out.println("=====================================================");
             System.out.println("Loop:");
             System.out.println("loopStatistics: " + loopStatistics);
-            System.out.println("loopStatistics elapsedTime: " + elapsedTimeLoop);
+            System.out.println("loopStatistics elapsedTime: " + elapsedTimeLoop +" ms");
             System.out.println("\n");
 
             System.out.println("Stream:");
             System.out.println("streamStatistics: " + streamStatistics);
-            System.out.println("streamStatistics elapsedTimeStream: " + elapsedTimeStream);
+            System.out.println("streamStatistics elapsedTimeStream: " + elapsedTimeStream+" ms");
             System.out.println("\n");
 
             System.out.println("Custom:");
             System.out.println("customStatistics: " + customStatistics);
-            System.out.println("customStatistics elapsedTimeCustom: " + elapsedTimeCustom);
+            System.out.println("customStatistics elapsedTimeCustom: " + elapsedTimeCustom+" ms");
         }
         
 
