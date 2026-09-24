@@ -7,15 +7,17 @@ import main.java.edu.itmo.reactive.lab01.model.Doctor;
 public class DoctorGenerator {
 
     private final Random random = new Random();
-    String[] names = {"Dr. Jose","Dra. Maria","Dr. Ivan","Dra. Ana"};
+    String[] firstNames = {"Dr. Jose", "Dra. Maria", "Dr. Ivan", "Dra. Ana", "Dr. Alvaro", "Dra. Carla", "Dr. Augusto", "Dra. Laura", "Dr. Carlos", "Dra. Antonella"};
+    String[] lastNames = {"Messi", "Carrasquilla", "Cordoba", "Crespo", "Valverde", "Torres", "Alonso", "Perez", "Suarez", "Meazza"};
     String[] specialities = {"Cardiologia","Medico General","Traumatologia","Neumologia"};
 
     public Doctor createRandomDoctor(long id){
         
-        String name = names[random.nextInt(names.length)];
+        String firstName = firstNames[random.nextInt(firstNames.length)];
+        String lastName = lastNames[random.nextInt(lastNames.length)];
         String speciality = specialities[random.nextInt(specialities.length)];
 
-        return new Doctor(id, name, speciality);
+        return new Doctor(id, firstName, lastName, speciality);
     }
     
 }

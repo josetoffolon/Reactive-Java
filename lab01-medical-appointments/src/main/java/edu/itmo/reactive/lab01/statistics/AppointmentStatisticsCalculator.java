@@ -1,5 +1,7 @@
  package main.java.edu.itmo.reactive.lab01.statistics;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,9 +18,56 @@ public class AppointmentStatisticsCalculator {
         long cancelled = 0;
         long scheduled = 0;
         long noShow = 0;
+        double totalPrice = 0.0;
+        double averagePrice = 0.0;
+        double minPrice = 0.0;
+        double maxPrice = 0.0;
+        Duration totalDuration = Duration.ZERO;
+        Duration averageDuration = Duration.ZERO;
+        LocalTime minDuration;
+        LocalTime maxDuration;
+        long firstVisitCount = 0;
+        long totalSymptoms = 0;
+        long averageSymptoms = 0;
+        long morningApppointments = 0;
+        long afternoomAppointments = 0;
+
+        double minPriceContol = 0.0;
+        double maxPriceContol = 0.0;
 
         for(MedicalAppointment appointment: appointments){
             count++;
+            totalPrice = totalPrice + appointment.getPrice();
+            minPriceContol = appointment.getPrice();
+            maxPriceContol = appointment.getPrice();
+            
+            if (appointment.getPrice() < minPriceContol){
+                minPrice = appointment.getPrice();
+            }
+
+            if (appointment.getPrice() > maxPriceContol){
+                maxPrice = appointment.getPrice();
+            }
+
+            if (appointment.getDetails().firstVisit()){
+                firstVisitCount++;
+            }
+
+           LocalTime times = appointment.getAppointmentTime();
+           Duration acuTime = Duration.ofNanos(times.toNanoOfDay());
+           totalDuration = totalDuration.plus(acuTime);
+
+           averageDuration = totalDuration.dividedBy(count);
+
+           if (times.isBefore(appointment.getAppointmentTime()) ){
+                minDuration = appointment.getAppointmentTime();
+           }
+
+           if (times.isAfter(appointment.getAppointmentTime()) ){
+                minDuration = appointment.getAppointmentTime();
+           }
+
+
             switch (appointment.getStatus()) {
                 case COMPLETED -> completed++;
                 case CANCELLED -> cancelled++;
@@ -27,12 +76,27 @@ public class AppointmentStatisticsCalculator {
             }
         }
 
+        averagePrice = totalPrice/count;
+
         return new AppointmentStatistics(
             count,
             completed,
             cancelled,
             scheduled,
-            noShow
+            noShow,
+            totalPrice,
+            averagePrice,
+            minPrice,
+            maxPrice,
+            totalDuration,
+            averageDuration,
+            minDuration,
+            maxDuration,
+            firstVisitCount,
+            totalSymptoms,
+            averageSymptoms,
+            morningApppointments,
+            afternoomAppointments
         );
     }
 
@@ -43,6 +107,19 @@ public class AppointmentStatisticsCalculator {
         long cancelled = 0;
         long scheduled = 0;
         long noShow = 0;
+        double totalPrice = 0.0;
+        double averagePrice = 0.0;
+        double minPrice = 0.0;
+        double maxPrice = 0.0;
+        long totalDuration = 0;
+        long averageDuration = 0;
+        long minDuration = 0;
+        long maxDuration = 0;
+        long firstVisitCount = 0;
+        long totalSymptoms = 0;
+        long averageSymptoms = 0;
+        long morningApppointments = 0;
+        long afternoomAppointments = 0;
 
         Map<AppointmentStatus, Long> statusCounts =
         appointments.stream().collect(
@@ -60,7 +137,20 @@ public class AppointmentStatisticsCalculator {
             completed,
             cancelled,
             scheduled,
-            noShow
+            noShow,
+            totalPrice,
+            averagePrice,
+            minPrice,
+            maxPrice,
+            totalDuration,
+            averageDuration,
+            minDuration,
+            maxDuration,
+            firstVisitCount,
+            totalSymptoms,
+            averageSymptoms,
+            morningApppointments,
+            afternoomAppointments
         );
     }
 

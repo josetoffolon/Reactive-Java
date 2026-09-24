@@ -9,6 +9,19 @@ public class AppointmentStatisticsAcumulator {
     private long cancelled;
     private long scheduled;
     private long noShow;
+    double totalPrice;
+    double averagePrice;
+    double minPrice;
+    double maxPrice;
+    long totalDuration;
+    long averageDuration;
+    long minDuration;
+    long maxDuration;
+    long firstVisitCount;
+    long totalSymptoms;
+    long averageSymptoms;
+    long morningApppointments;
+    long afternoomAppointments;
 
     
     public void add(MedicalAppointment appointment){
@@ -39,7 +52,20 @@ public class AppointmentStatisticsAcumulator {
             completed,
             cancelled,
             scheduled,
-            noShow
+            noShow,
+            totalPrice,
+            averagePrice,
+            minPrice,
+            maxPrice,
+            totalDuration,
+            averageDuration,
+            minDuration,
+            maxDuration,
+            firstVisitCount,
+            totalSymptoms,
+            averageSymptoms,
+            morningApppointments,
+            afternoomAppointments
         );
     }
 }
