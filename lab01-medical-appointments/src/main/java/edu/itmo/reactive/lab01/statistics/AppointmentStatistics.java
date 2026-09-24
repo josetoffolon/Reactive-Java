@@ -11,12 +11,12 @@ public record AppointmentStatistics(
     double minPrice,
     double maxPrice,
     long totalDuration,
-    long averageDuration,
+    double averageDuration,
     long minDuration,
     long maxDuration,
     long firstVisitCount,
     long totalSymptoms,
-    long averageSymptoms,
+    double averageSymptoms,
     long morningApppointments,
     long afternoomAppointments
 ) {}
