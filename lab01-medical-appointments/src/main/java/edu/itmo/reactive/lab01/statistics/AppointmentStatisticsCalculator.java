@@ -2,6 +2,7 @@
 
 import java.time.LocalTime;
 import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -96,16 +97,6 @@ public class AppointmentStatisticsCalculator {
     }
 
     public AppointmentStatistics calculateWithStream(List<MedicalAppointment> appointments){
-        
-        long totalDuration = 0;
-        long averageDuration = 0;
-        long minDuration = 0;
-        long maxDuration = 0;
-        long firstVisitCount = 0;
-        long totalSymptoms = 0;
-        long averageSymptoms = 0;
-        long morningApppointments = 0;
-        long afternoomAppointments = 0;
 
         Map<AppointmentStatus, Long> statusCounts = 
             appointments.stream().collect(
@@ -127,6 +118,34 @@ public class AppointmentStatisticsCalculator {
         double totalPrice = priceStats.getSum();
         double minPrice = priceStats.getMin();
         double maxPrice = priceStats.getMax();
+
+        IntSummaryStatistics durationStatistics = 
+            appointments.stream().collect(
+                Collectors.summarizingInt(
+                    appointment -> appointment.getDetails().durationMinutes()));
+        
+        long totalDuration = durationStatistics.getSum();
+        double averageDuration = durationStatistics.getAverage();
+        int minDuration = durationStatistics.getMin();
+        int maxDuration = durationStatistics.getMax();
+
+        long firstVisitCount = 
+            appointments.stream().filter(
+                appointment -> appointment.getDetails().firstVisit()).count();
+        
+        long totalSymptoms = 
+            appointments.stream().mapToLong(
+                appointment -> appointment.getSymptoms().size()).sum();
+
+        double averageSymptoms = appointments.stream().mapToInt(
+            appointment -> appointment.getSymptoms().size()).average().orElse(0.0);
+
+        long morningApppointments = appointments.stream().filter(
+            appointment -> appointment.getAppointmentTime().isBefore(LocalTime.NOON)).count();
+
+        long afternoomAppointments = appointments.stream().filter(
+            appointment -> !appointment.getAppointmentTime().isBefore(LocalTime.NOON)).count();
+
 
         return new AppointmentStatistics(
             count,
