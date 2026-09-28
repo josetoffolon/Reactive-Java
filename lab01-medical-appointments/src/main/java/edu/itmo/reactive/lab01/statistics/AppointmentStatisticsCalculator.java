@@ -25,8 +25,8 @@ public class AppointmentStatisticsCalculator {
         double maxPrice = Double.NEGATIVE_INFINITY;
         long totalDuration = 0;
         double averageDuration = 0.0;
-        long minDuration = 0;
-        long maxDuration = 0;
+        long minDuration = Long.MAX_VALUE;
+        long maxDuration = Long.MIN_VALUE;
         long firstVisitCount = 0;
         long totalSymptoms = 0;
         double averageSymptoms = 0;
@@ -37,6 +37,7 @@ public class AppointmentStatisticsCalculator {
             count++;
 
             double price = appointment.getPrice();
+            totalPrice += price;
             minPrice = Math.min(minPrice, price);
             maxPrice = Math.max(maxPrice, price);
 
