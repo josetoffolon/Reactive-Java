@@ -1,177 +1,96 @@
  package main.java.edu.itmo.reactive.lab01.statistics;
 
-import java.time.LocalTime;
-import java.util.DoubleSummaryStatistics;
-import java.util.IntSummaryStatistics;
+import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import main.java.edu.itmo.reactive.lab01.model.AppointmentStatus;
+import main.java.edu.itmo.reactive.lab01.model.Doctor;
 import main.java.edu.itmo.reactive.lab01.model.MedicalAppointment;
 
 public class AppointmentStatisticsCalculator {
 
     public AppointmentStatistics calculateWithLoop(List<MedicalAppointment> appointments){
 
-        long count = 0;
-        long completed = 0;
-        long cancelled = 0;
-        long scheduled = 0;
-        long noShow = 0;
-        double totalPrice = 0.0;
-        double averagePrice = 0.0;
-        double minPrice = Double.POSITIVE_INFINITY;
-        double maxPrice = Double.NEGATIVE_INFINITY;
-        long totalDuration = 0;
-        double averageDuration = 0.0;
-        long minDuration = Long.MAX_VALUE;
-        long maxDuration = Long.MIN_VALUE;
-        long firstVisitCount = 0;
-        long totalSymptoms = 0;
-        double averageSymptoms = 0;
-        long morningApppointments = 0;
-        long afternoomAppointments = 0;
+        if (appointments == null || appointments.isEmpty()){
+            return AppointmentStatistics.empty();
+        }
+ 
+        long totalCount = 0;
+        Map<AppointmentStatus, Long> countByStatus = new HashMap<>();
+        Map<Doctor, Long> countByDoctor = new HashMap<>();
+        Map<String, Long> countBySymptoms = new HashMap<>();
+        Map<YearMonth, Double> totalPriceByMonth = new HashMap<>();
 
-        for(MedicalAppointment appointment: appointments){
-            count++;
+        for(MedicalAppointment a : appointments){
+            totalCount++;
+            countByStatus.merge(a.getStatus(), 1L, Long::sum);
 
-            double price = appointment.getPrice();
-            totalPrice += price;
-            minPrice = Math.min(minPrice, price);
-            maxPrice = Math.max(maxPrice, price);
-
-            totalSymptoms +=appointment.getSymptoms().size();
-
-            if (appointment.getDetails().firstVisit()){
-                firstVisitCount++;
+            for(String s: a.getSymptoms()){
+                countBySymptoms.merge(s, 1L, Long::sum);
             }
 
-            int duration = appointment.getDetails().durationMinutes();
-            totalDuration += duration;
-            if (duration < minDuration) {
-                minDuration = duration;
-            }
-            if (duration > maxDuration) {
-                maxDuration = duration;
-            }
+            countByDoctor.merge(a.getDoctor(), 1L, Long::sum);
 
-            LocalTime appointmentTime = appointment.getAppointmentTime();
-            if (appointmentTime.isBefore(LocalTime.NOON)){
-                morningApppointments++;
-            } else {
-                afternoomAppointments++;
-            }
-
-            switch (appointment.getStatus()) {
-                case COMPLETED -> completed++;
-                case CANCELLED -> cancelled++;
-                case SCHEDULED -> scheduled++;
-                case NO_SHOW -> noShow++;
-            }
+            YearMonth month = YearMonth.from(a.getAppointmentDate());
+            totalPriceByMonth.merge(month, a.getPrice(), Double::sum);
         }
 
-        averageSymptoms = (double) totalSymptoms /count;
-        averageDuration = (double) totalDuration / count;
-        averagePrice = totalPrice/count;
-
         return new AppointmentStatistics(
-            count,
-            completed,
-            cancelled,
-            scheduled,
-            noShow,
-            totalPrice,
-            averagePrice,
-            minPrice,
-            maxPrice,
-            totalDuration,
-            averageDuration,
-            minDuration,
-            maxDuration,
-            firstVisitCount,
-            totalSymptoms,
-            averageSymptoms,
-            morningApppointments,
-            afternoomAppointments
+            totalCount,
+            countByStatus,
+            countByDoctor,
+            countBySymptoms,
+            totalPriceByMonth
         );
     }
 
     public AppointmentStatistics calculateWithStream(List<MedicalAppointment> appointments){
 
-        Map<AppointmentStatus, Long> statusCounts = 
-            appointments.stream().collect(
-                Collectors.groupingBy(
-                    MedicalAppointment::getStatus, Collectors.counting()));
+        if (appointments == null || appointments.isEmpty()){
+            return AppointmentStatistics.empty();
+        }
         
-        long count = appointments.size();
-        long completed = statusCounts.getOrDefault(AppointmentStatus.COMPLETED, 0L);
-        long cancelled = statusCounts.getOrDefault(AppointmentStatus.CANCELLED, 0L);
-        long scheduled = statusCounts.getOrDefault(AppointmentStatus.SCHEDULED, 0L);
-        long noShow = statusCounts.getOrDefault(AppointmentStatus.NO_SHOW, 0L);
+        long totalCount = appointments.size();
 
-        DoubleSummaryStatistics priceStats =
-            appointments.stream().collect(
-                Collectors.summarizingDouble(
-                    MedicalAppointment::getPrice));
+        Map<AppointmentStatus, Long> countByStatus = appointments.stream()
+            .collect(Collectors.groupingBy(
+                MedicalAppointment::getStatus,
+                Collectors.counting()));
 
-        double averagePrice = priceStats.getAverage();
-        double totalPrice = priceStats.getSum();
-        double minPrice = priceStats.getMin();
-        double maxPrice = priceStats.getMax();
+        Map<Doctor, Long> countByDoctor = appointments.stream()
+            .collect(Collectors.groupingBy(
+                MedicalAppointment::getDoctor,
+                Collectors.counting()));
 
-        IntSummaryStatistics durationStatistics = 
-            appointments.stream().collect(
-                Collectors.summarizingInt(
-                    appointment -> appointment.getDetails().durationMinutes()));
+        Map<String, Long> countBySymptoms = appointments.stream()
+            .flatMap(a -> a.getSymptoms().stream())
+            .collect(Collectors.groupingBy(
+                Function.identity(),
+                Collectors.counting()));
         
-        long totalDuration = durationStatistics.getSum();
-        double averageDuration = durationStatistics.getAverage();
-        int minDuration = durationStatistics.getMin();
-        int maxDuration = durationStatistics.getMax();
-
-        long firstVisitCount = 
-            appointments.stream().filter(
-                appointment -> appointment.getDetails().firstVisit()).count();
-        
-        long totalSymptoms = 
-            appointments.stream().mapToLong(
-                appointment -> appointment.getSymptoms().size()).sum();
-
-        double averageSymptoms = appointments.stream().mapToInt(
-            appointment -> appointment.getSymptoms().size()).average().orElse(0.0);
-
-        long morningApppointments = appointments.stream().filter(
-            appointment -> appointment.getAppointmentTime().isBefore(LocalTime.NOON)).count();
-
-        long afternoomAppointments = appointments.stream().filter(
-            appointment -> !appointment.getAppointmentTime().isBefore(LocalTime.NOON)).count();
-
+        Map<YearMonth, Double> totalPriceByMonth = appointments.stream()
+            .collect(Collectors.groupingBy(
+                a -> YearMonth.from(a.getAppointmentDate()),
+                Collectors.summingDouble(MedicalAppointment::getPrice)));
 
         return new AppointmentStatistics(
-            count,
-            completed,
-            cancelled,
-            scheduled,
-            noShow,
-            totalPrice,
-            averagePrice,
-            minPrice,
-            maxPrice,
-            totalDuration,
-            averageDuration,
-            minDuration,
-            maxDuration,
-            firstVisitCount,
-            totalSymptoms,
-            averageSymptoms,
-            morningApppointments,
-            afternoomAppointments
+            totalCount,
+            countByStatus,
+            countByDoctor,
+            countBySymptoms,
+            totalPriceByMonth
         );
     }
 
     public AppointmentStatistics calculateWithCollector(List<MedicalAppointment> appointments){
-        return appointments.stream().collect(new AppointmentStatisticsCollector());
+        if (appointments == null || appointments.isEmpty()){
+            return AppointmentStatistics.empty();
+        }
+        return appointments.stream().collect(AppointmentStatisticsCollector.INSTANCE);
     }
     
 }

@@ -14,6 +14,10 @@ public class AppointmentStatisticsCollector implements Collector<
                     AppointmentStatisticsAcumulator, 
                     AppointmentStatistics>{
 
+    public  static final AppointmentStatisticsCollector INSTANCE = new AppointmentStatisticsCollector();
+
+    private static final Set<Characteristics> CHARACTERISTICS = Set.of();
+
     @Override
     public Supplier<AppointmentStatisticsAcumulator> supplier() {
         return AppointmentStatisticsAcumulator::new;
@@ -36,7 +40,7 @@ public class AppointmentStatisticsCollector implements Collector<
 
     @Override
     public Set<Characteristics> characteristics() {
-        return Set.of();
+        return CHARACTERISTICS;
     }
     
 }

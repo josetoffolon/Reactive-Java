@@ -13,9 +13,22 @@ import main.java.edu.itmo.reactive.lab01.model.MedicalAppointment;
 import main.java.edu.itmo.reactive.lab01.model.Patient;
 
 public class MedicalAppointmentGenerator {
+
+    private final List<Doctor> doctorPool;
+    private final List<Patient> patientPool;
     private final Random random = new Random();
+
     PatientGenerator patientGenerator = new PatientGenerator();
     DoctorGenerator doctorGenerator = new DoctorGenerator();
+
+    public MedicalAppointmentGenerator() {
+    this(20, 100);
+}
+
+    public MedicalAppointmentGenerator(int doctorPoolSize, int patientPoolSize) {
+        this.doctorPool = new DoctorGenerator().generate(doctorPoolSize);
+        this.patientPool = new PatientGenerator().generate(patientPoolSize);
+    }
 
     public List<MedicalAppointment> generateAppointments(int count){
         List<MedicalAppointment> appointments = new ArrayList<>();
@@ -27,6 +40,10 @@ public class MedicalAppointmentGenerator {
     }
 
     private MedicalAppointment createRandomAppointment(long id) {
+
+        Patient patient = patientPool.get(random.nextInt(patientPool.size()));
+        Doctor  doctor  = doctorPool.get(random.nextInt(doctorPool.size()));
+
         String[] reasons = {
             "General consultation",
             "Annual checkup",
@@ -47,8 +64,6 @@ public class MedicalAppointmentGenerator {
                     random.nextBoolean());
         
         List<String> symptoms = getRandomSymptoms();
-        Patient patient = patientGenerator.createRandomPatients(id);
-        Doctor doctor = doctorGenerator.createRandomDoctor(id);
 
         return new MedicalAppointment(
             id,

@@ -1,117 +1,61 @@
 package main.java.edu.itmo.reactive.lab01.statistics;
 
-import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.HashMap;
+import java.util.Map;
 
+import main.java.edu.itmo.reactive.lab01.model.AppointmentStatus;
+import main.java.edu.itmo.reactive.lab01.model.Doctor;
 import main.java.edu.itmo.reactive.lab01.model.MedicalAppointment;
 
 public class AppointmentStatisticsAcumulator {
 
-    private long count;
-    private long completed;
-    private long cancelled;
-    private long scheduled;
-    private long noShow;
-    private double totalPrice;
-    private double averagePrice;
-    private double minPrice = Double.POSITIVE_INFINITY;
-    private double maxPrice = Double.NEGATIVE_INFINITY;
-    private long totalDuration;
-    private double averageDuration;
-    private int minDuration = Integer.MAX_VALUE;
-    private int maxDuration = Integer.MIN_VALUE;
-    private long firstVisitCount;
-    private long totalSymptoms;
-    private double averageSymptoms;
-    private long morningApppointments;
-    private long afternoomAppointments;
+    private long totalCount;
+    private final Map<AppointmentStatus, Long> countByStatus = new HashMap<>();
+    private final Map<String, Long> countBySymptoms = new HashMap<>();
+    private final Map<Doctor, Long> countByDoctor = new HashMap<>();
+    private final Map<YearMonth, Double> totalPriceByMonth = new HashMap<>();
 
     
     public void add(MedicalAppointment appointment){
 
-        count++;
+        totalCount++;
 
-        double price = appointment.getPrice();
-        totalPrice += price;
-        minPrice = Math.min(minPrice, price);
-        maxPrice = Math.max(maxPrice, price);
+        countByStatus.merge(appointment.getStatus(), 1L, Long::sum);
 
-        totalSymptoms +=appointment.getSymptoms().size();
-
-        if (appointment.getDetails().firstVisit()){
-            firstVisitCount++;
+        for (String symtom : appointment.getSymptoms()){
+            countBySymptoms.merge(symtom, 1L, Long::sum);
         }
 
-        int duration = appointment.getDetails().durationMinutes();
-        totalDuration += duration;
-        if (duration < minDuration) {
-            minDuration = duration;
-        }
-        if (duration > maxDuration) {
-            maxDuration = duration;
-        }
+        countByDoctor.merge(appointment.getDoctor(), 1L, Long::sum);
 
-        LocalTime appointmentTime = appointment.getAppointmentTime();
-        if (appointmentTime.isBefore(LocalTime.NOON)){
-            morningApppointments++;
-        } else {
-            afternoomAppointments++;
-        }
-
-        averageSymptoms = (double) totalSymptoms /count;
-        averageDuration = (double) totalDuration / count;
-        averagePrice = totalPrice/count;
-
-        switch (appointment.getStatus()){
-            case COMPLETED -> completed++;
-            case CANCELLED -> cancelled++;
-            case SCHEDULED -> scheduled++;
-            case NO_SHOW -> noShow++;
-        }
+        YearMonth month = YearMonth.from(appointment.getAppointmentDate());
+        totalPriceByMonth.merge(month, appointment.getPrice(), Double::sum);
 
     }
 
     public AppointmentStatisticsAcumulator combine(AppointmentStatisticsAcumulator other){
-        this.count += other.count;
-        this.completed += other.completed;
-        this.cancelled += other.cancelled;
-        this.scheduled += other.scheduled;
-        this.noShow += other.noShow;
-        this.totalPrice += other.totalPrice;
-        this.maxPrice += Math.max(this.maxPrice, other.maxPrice);
-        this.minPrice += Math.min(this.minPrice, other.minPrice);
-        this.totalDuration += other.totalDuration;
-        this.minDuration += Math.min(this.minDuration, other.minDuration);
-        this.maxDuration += Math.max(this.maxDuration, other.maxDuration);
-        this.firstVisitCount += other.firstVisitCount;
-        this.totalSymptoms += other.totalSymptoms;
-        this.morningApppointments += other.morningApppointments;
-        this.afternoomAppointments += other.afternoomAppointments;
-        this.averageDuration += other.averageDuration;
-        this.averagePrice += other.averagePrice;
-        this.averageSymptoms += averageSymptoms;
+
+        if (other.totalCount == 0) return this;
+
+        this.totalCount += other.totalCount;
+
+        other.countByStatus.forEach((k, v) -> this.countByStatus.merge(k, v, Long::sum));
+        other.countByDoctor.forEach((k, v) -> this.countByDoctor.merge(k, v, Long::sum));
+        other.countBySymptoms.forEach((k, v) -> this.countBySymptoms.merge(k, v, Long::sum));
+        other.totalPriceByMonth.forEach((k, v) -> this.totalPriceByMonth.merge(k, v, Double::sum));
+
         return this;
+
     }
 
     public AppointmentStatistics tStatistics(){
         return  new AppointmentStatistics(
-            count,
-            completed,
-            cancelled,
-            scheduled,
-            noShow,
-            totalPrice,
-            averagePrice,
-            minPrice,
-            maxPrice,
-            totalDuration,
-            averageDuration,
-            minDuration,
-            maxDuration,
-            firstVisitCount,
-            totalSymptoms,
-            averageSymptoms,
-            morningApppointments,
-            afternoomAppointments
+            totalCount,
+            Map.copyOf(countByStatus),
+            Map.copyOf(countByDoctor),
+            Map.copyOf(countBySymptoms),
+            Map.copyOf(totalPriceByMonth)
         );
     }
 }

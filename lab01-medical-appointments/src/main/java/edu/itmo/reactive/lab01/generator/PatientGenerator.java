@@ -1,5 +1,7 @@
 package main.java.edu.itmo.reactive.lab01.generator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import main.java.edu.itmo.reactive.lab01.model.Patient;
@@ -19,4 +21,12 @@ public class PatientGenerator {
 
         return new Patient(id, firstName, lastName, age);
     }
+
+    public List<Patient> generate(int count) {
+    List<Patient> result = new ArrayList<>(count);
+    for (long i = 1; i <= count; i++) {
+        result.add(createRandomPatients(i));
+    }
+    return result;
+}
 }

@@ -14,8 +14,25 @@ public class Doctor {
         this.speciality = speciality2;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return "Doctor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", speciality=" + speciality + "]";
+    }*/
+
+    @Override
+    public String toString() {
+        return "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Doctor d)) return false;
+        return id == d.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(id);
     }
 }

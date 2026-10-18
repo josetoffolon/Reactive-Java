@@ -34,6 +34,22 @@ public class Main {
             long endTimeCustom = System.nanoTime();
             double elapsedTimeCustom = (endTimeCustom - startTimeCustom)/1000000.0;
 
+            /*if (!loopStatistics.equals(streamStatistics) || !loopStatistics.equals(customStatistics)) {
+                System.err.println("¡MISMATCH entre implementaciones!");
+            }*/
+
+            if (!loopStatistics.equals(streamStatistics)) {
+                System.out.println("MISMATCH loop vs stream");
+                System.out.println("  totalCount:    " + loopStatistics.totalCount()
+                                + " vs " + streamStatistics.totalCount());
+                System.out.println("  countByStatus: " + loopStatistics.countByStatus().equals(streamStatistics.countByStatus()));
+                System.out.println("  countBySymptom:" + loopStatistics.countBySymtoms().equals(streamStatistics.countBySymtoms()));
+                System.out.println("  countByDoctor: " + loopStatistics.countByDoctor().equals(streamStatistics.countByDoctor())
+                                + " (sizes " + loopStatistics.countByDoctor().size()
+                                + " / " + streamStatistics.countByDoctor().size() + ")");
+                System.out.println("  totalPriceByMonth: " + loopStatistics.totalPriceByMonth().equals(streamStatistics.totalPriceByMonth()));
+            }
+
             System.out.println("\n=====================================================");
             System.out.println("Appointments Genereted: " + appointments.size());
             System.out.println("=====================================================");

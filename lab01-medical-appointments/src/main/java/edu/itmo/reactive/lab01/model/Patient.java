@@ -14,9 +14,9 @@ public class Patient {
         this.age = age2;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return "Patient [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", age=" + age +"]";
-    }
+    }*/
 
 }
