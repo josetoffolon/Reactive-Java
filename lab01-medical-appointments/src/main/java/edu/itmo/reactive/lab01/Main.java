@@ -36,7 +36,7 @@ public class Main {
 
             /*if (!loopStatistics.equals(streamStatistics) || !loopStatistics.equals(customStatistics)) {
                 System.err.println("¡MISMATCH entre implementaciones!");
-            }*/
+            }
 
             if (!loopStatistics.equals(streamStatistics)) {
                 System.out.println("MISMATCH loop vs stream");
@@ -48,23 +48,23 @@ public class Main {
                                 + " (sizes " + loopStatistics.countByDoctor().size()
                                 + " / " + streamStatistics.countByDoctor().size() + ")");
                 System.out.println("  totalPriceByMonth: " + loopStatistics.totalPriceByMonth().equals(streamStatistics.totalPriceByMonth()));
-            }
+            }*/
 
             System.out.println("\n=====================================================");
             System.out.println("Appointments Genereted: " + appointments.size());
             System.out.println("=====================================================");
             System.out.println("Loop:");
-            System.out.println("loopStatistics: " + loopStatistics);
+            //System.out.println("loopStatistics: " + loopStatistics);
             System.out.println("loopStatistics elapsedTime: " + elapsedTimeLoop +" ms");
             System.out.println("\n");
 
             System.out.println("Stream:");
-            System.out.println("streamStatistics: " + streamStatistics);
+            //System.out.println("streamStatistics: " + streamStatistics);
             System.out.println("streamStatistics elapsedTimeStream: " + elapsedTimeStream+" ms");
             System.out.println("\n");
 
             System.out.println("Custom:");
-            System.out.println("customStatistics: " + customStatistics);
+            //System.out.println("customStatistics: " + customStatistics);
             System.out.println("customStatistics elapsedTimeCustom: " + elapsedTimeCustom+" ms");
         }
         

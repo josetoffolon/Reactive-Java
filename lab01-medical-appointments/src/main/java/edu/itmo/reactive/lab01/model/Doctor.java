@@ -14,15 +14,11 @@ public class Doctor {
         this.speciality = speciality2;
     }
 
-    /*@Override
-    public String toString() {
-        return "Doctor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", speciality=" + speciality + "]";
-    }*/
-
     @Override
     public String toString() {
-        return "";
+        return "Doctor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", speciality=" + speciality + "]";
     }
+
 
     @Override
     public boolean equals(Object o) {

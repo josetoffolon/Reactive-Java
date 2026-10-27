@@ -1,6 +1,5 @@
 package main.java.edu.itmo.reactive.lab01.statistics;
 
-import java.time.Month;
 import java.time.YearMonth;
 import java.util.Map;
 
@@ -24,7 +23,6 @@ public record AppointmentStatistics(
                 this.countByDoctor = countByDoctor;
                 this.countBySymtoms = countBySymtoms;
                 this.totalPriceByMonth = totalPriceByMonth;
-
 	}
 
 	public static AppointmentStatistics empty() {
